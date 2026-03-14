@@ -1,0 +1,163 @@
+---
+title: "Diffusion Planner를 CarMaker에 연동하는 방법"
+date: "2025-03-10"
+tags: ["autonomous-driving", "diffusion", "carmaker", "ros"]
+category: "tutorial"
+math: true
+toc: true
+draft: false
+summary: "Diffusion Planner 모델을 IPG CarMaker 시뮬레이터와 연결하는 과정을 정리합니다."
+---
+
+## 소개
+
+최근 자율주행 분야에서 diffusion model 기반 경로 계획이 주목받고 있다. 기존의 규칙 기반 플래너나 단순한 학습 기반 플래너와 달리, diffusion planner는 노이즈로부터 점진적으로 경로를 생성(denoising)하는 방식으로 다양하고 안전한 경로를 샘플링할 수 있다. 이 글에서는 학습된 Diffusion Planner 모델을 IPG CarMaker 시뮬레이터에 연동하여 실시간으로 경로를 생성하고 차량을 제어하는 과정을 정리한다.
+
+## Diffusion Planner 기본 원리
+
+Diffusion model은 데이터 분포에서 score function을 학습한다. Score function은 로그 확률 밀도의 기울기로 정의된다:
+
+$$s_\theta(x) \approx \nabla_x \log p(x)$$
+
+이 score function을 활용하여 노이즈가 추가된 데이터로부터 원래 데이터를 복원하는 reverse process를 수행한다. Forward process에서 데이터에 점진적으로 노이즈를 추가하는 확률 미분 방정식(SDE)은 다음과 같다:
+
+$$dx = f(x,t)dt + g(t)dw$$
+
+여기서 $f(x,t)$는 drift coefficient, $g(t)$는 diffusion coefficient, $w$는 Wiener process이다. 자율주행에서는 $x$가 미래 경로(trajectory)를 나타내며, 조건부 생성을 통해 현재 상태와 주변 환경에 적합한 경로를 생성한다.
+
+## 환경 설정
+
+### CarMaker 설치 및 ROS 브릿지 구성
+
+CarMaker와의 통신을 위해 ROS 브릿지를 설정한다. CarMaker는 TCP/IP 기반의 APO(Application Online) 인터페이스를 제공하며, 이를 ROS 토픽으로 변환하는 브릿지 노드를 구성해야 한다.
+
+```bash
+# ROS workspace 생성
+mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
+
+# CarMaker ROS 브릿지 패키지 클론
+git clone https://github.com/your-org/carmaker_ros_bridge.git
+
+# 의존성 설치
+rosdep install --from-paths . --ignore-src -r -y
+
+# 빌드
+cd ~/catkin_ws && catkin_make
+source devel/setup.bash
+```
+
+### Diffusion Planner 모델 준비
+
+학습된 모델 체크포인트를 로드하고 ROS 노드로 감싸는 Python 스크립트를 작성한다.
+
+```python
+import torch
+import rospy
+from nav_msgs.msg import Path
+from geometry_msgs.msg import PoseStamped
+from diffusion_planner.model import DiffusionPlannerNet
+
+class DiffusionPlannerNode:
+    def __init__(self):
+        rospy.init_node('diffusion_planner')
+
+        # 모델 로드
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model = DiffusionPlannerNet(
+            horizon=50,
+            state_dim=4,
+            action_dim=2,
+            n_timesteps=100,
+        ).to(self.device)
+        checkpoint = torch.load('checkpoints/planner_best.pt', map_location=self.device)
+        self.model.load_state_dict(checkpoint['model_state_dict'])
+        self.model.eval()
+
+        # ROS 퍼블리셔 및 서브스크라이버
+        self.path_pub = rospy.Publisher('/planned_path', Path, queue_size=1)
+        rospy.Subscriber('/carmaker/ego_state', PoseStamped, self.state_callback)
+
+        self.rate = rospy.Rate(10)  # 10Hz
+
+    def state_callback(self, msg):
+        """현재 차량 상태를 받아 경로를 생성한다."""
+        state = self._msg_to_tensor(msg)
+
+        with torch.no_grad():
+            trajectory = self.model.sample(
+                state,
+                n_samples=16,
+                guidance_scale=1.5,
+            )
+
+        best_traj = self._select_best(trajectory)
+        path_msg = self._tensor_to_path(best_traj)
+        self.path_pub.publish(path_msg)
+
+    def _msg_to_tensor(self, msg):
+        """ROS 메시지를 텐서로 변환한다."""
+        pose = msg.pose
+        state = torch.tensor([
+            pose.position.x,
+            pose.position.y,
+            pose.orientation.z,
+            pose.orientation.w,
+        ], dtype=torch.float32).unsqueeze(0).to(self.device)
+        return state
+
+    def _select_best(self, trajectories):
+        """비용 함수 기반으로 최적 경로를 선택한다."""
+        costs = self._compute_costs(trajectories)
+        best_idx = torch.argmin(costs)
+        return trajectories[best_idx]
+
+    def _compute_costs(self, trajectories):
+        """경로 평활도, 장애물 근접도 등을 기반으로 비용을 계산한다."""
+        smoothness = torch.sum(torch.diff(trajectories, dim=1) ** 2, dim=(1, 2))
+        return smoothness
+
+    def _tensor_to_path(self, trajectory):
+        """텐서를 ROS Path 메시지로 변환한다."""
+        path = Path()
+        path.header.frame_id = 'map'
+        path.header.stamp = rospy.Time.now()
+        for point in trajectory:
+            pose = PoseStamped()
+            pose.header = path.header
+            pose.pose.position.x = point[0].item()
+            pose.pose.position.y = point[1].item()
+            path.poses.append(pose)
+        return path
+
+if __name__ == '__main__':
+    node = DiffusionPlannerNode()
+    rospy.spin()
+```
+
+## CarMaker 연동 실행
+
+모든 구성이 완료되면 다음 순서로 시스템을 실행한다.
+
+```bash
+# 1. ROS master 실행
+roscore &
+
+# 2. CarMaker 브릿지 실행
+roslaunch carmaker_ros_bridge carmaker_bridge.launch
+
+# 3. Diffusion Planner 노드 실행
+rosrun diffusion_planner planner_node.py
+
+# 4. 경로 시각화 (RViz)
+rviz -d config/planner_viz.rviz
+```
+
+## 주의사항
+
+- CarMaker의 시뮬레이션 스텝과 planner의 추론 주기를 맞추는 것이 중요하다. GPU 추론 시 약 50ms 이내로 결과가 나와야 10Hz 이상의 제어 주기를 유지할 수 있다.
+- Diffusion sampling의 denoising step 수($T$)를 줄이면 속도는 빨라지지만 경로 품질이 저하될 수 있으므로, DDIM과 같은 가속 샘플링 기법을 활용하는 것을 권장한다.
+- 조건부 생성 시 classifier-free guidance의 scale 값에 따라 경로의 다양성과 안전성 간 trade-off가 발생한다.
+
+## 마무리
+
+Diffusion Planner를 CarMaker에 연동하면 학습 기반 경로 계획의 성능을 고충실도 시뮬레이션 환경에서 검증할 수 있다. 이 파이프라인을 기반으로 다양한 주행 시나리오에 대한 체계적인 평가가 가능하며, 실차 적용 전 안전성 검증 단계로 활용할 수 있다.

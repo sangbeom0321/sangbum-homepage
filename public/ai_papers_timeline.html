@@ -84,27 +84,30 @@ h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background
 .legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#5b607a}
 .legend-dot{width:8px;height:8px;border-radius:2px}
 
-/* ===== Big Bang Universe Visualization ===== */
-.universe{position:relative;width:100%;background:radial-gradient(ellipse at center,#ffffff 0%,#f4f6fc 60%,#eaedf7 100%);border:1px solid #e6e8f0;border-radius:16px;margin-bottom:28px;overflow:hidden;box-shadow:0 4px 24px rgba(31,34,51,0.06)}
+/* ===== Big Bang Branch Tree ===== */
+.universe{position:relative;width:100%;background:linear-gradient(180deg,#ffffff 0%,#f4f6fc 100%);border:1px solid #e6e8f0;border-radius:16px;margin-bottom:28px;overflow:hidden;box-shadow:0 4px 24px rgba(31,34,51,0.06)}
 .universe-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px 4px;flex-wrap:wrap;gap:8px}
 .universe-title{font-size:14px;font-weight:700;color:#2a2d40;display:flex;align-items:center;gap:8px}
 .universe-title::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#ffffff,#6a5cf0);box-shadow:0 0 12px #6a5cf0aa}
 .universe-hint{font-size:11px;color:#8a8fa6}
-.universe-svg{display:block;width:100%;max-width:760px;height:auto;margin:0 auto;padding:8px 12px 18px}
-.universe-svg .ring{fill:none;stroke:#d8dbe6;stroke-width:1;stroke-dasharray:2 4;opacity:0.7}
-.universe-svg .ring-label{font-size:9px;fill:#9ea3b8;font-family:'Pretendard',sans-serif}
-.universe-svg .lineage-edge{stroke:#c8ccdc;stroke-width:0.7;fill:none;opacity:0.5;transition:all .25s}
-.universe-svg .lineage-edge.highlight{stroke:#ef4f6b;stroke-width:1.6;opacity:0.95}
+.universe-scroll{position:relative;overflow-x:auto;overflow-y:hidden;padding:6px 4px 14px}
+.universe-svg{display:block;width:100%;min-width:1100px;height:auto}
+.universe-svg .year-grid{stroke:#e6e8f0;stroke-width:1;stroke-dasharray:2 5}
+.universe-svg .year-label{font-size:14px;fill:#8a8fa6;font-family:'Pretendard',sans-serif;font-weight:600}
+.universe-svg .branch-edge{fill:none;stroke-linecap:round;transition:all .25s}
+.universe-svg .branch-edge.primary{stroke-width:1.6;opacity:0.55}
+.universe-svg .branch-edge.secondary{stroke-width:0.9;opacity:0.18;stroke-dasharray:3 4}
+.universe-svg .branch-edge.highlight{stroke:#ef4f6b !important;stroke-width:2.4;opacity:0.95;stroke-dasharray:none}
 .universe-svg .paper-node{cursor:pointer;transition:all .2s}
 .universe-svg .paper-node circle{transition:all .2s}
-.universe-svg .paper-node:hover circle{r:5.5;filter:drop-shadow(0 0 6px currentColor)}
-.universe-svg .paper-node.dimmed{opacity:0.18}
-.universe-svg .paper-node.lineage circle{r:4.5}
-.universe-svg .paper-node.selected circle{r:6.5;stroke:#ef4f6b;stroke-width:2}
-.universe-svg .paper-node.selected{filter:drop-shadow(0 0 8px #ef4f6baa)}
-.universe-svg .singularity{fill:url(#bigbang-grad);filter:drop-shadow(0 0 18px #6a5cf0cc)}
-.universe-svg .singularity-label{font-size:10px;font-weight:700;fill:#2a2d40;text-anchor:middle;font-family:'Pretendard',sans-serif}
-.universe-tooltip{position:absolute;pointer-events:none;background:#ffffff;border:1px solid #d8dbe6;border-radius:8px;padding:8px 12px;font-size:12px;color:#1f2233;box-shadow:0 6px 20px rgba(31,34,51,0.18);max-width:260px;opacity:0;transition:opacity .15s;z-index:10}
+.universe-svg .paper-node:hover circle{r:7;filter:drop-shadow(0 0 8px currentColor)}
+.universe-svg .paper-node.dimmed{opacity:0.13}
+.universe-svg .paper-node.lineage circle{r:5.5}
+.universe-svg .paper-node.selected circle{r:8;stroke:#ef4f6b;stroke-width:2.4}
+.universe-svg .paper-node.selected{filter:drop-shadow(0 0 10px #ef4f6baa)}
+.universe-svg .singularity{fill:url(#bigbang-grad);filter:drop-shadow(0 0 22px #6a5cf0cc)}
+.universe-svg .singularity-label{font-size:15px;font-weight:700;fill:#2a2d40;text-anchor:middle;font-family:'Pretendard',sans-serif}
+.universe-tooltip{position:absolute;pointer-events:none;background:#ffffff;border:1px solid #d8dbe6;border-radius:8px;padding:8px 12px;font-size:12px;color:#1f2233;box-shadow:0 6px 20px rgba(31,34,51,0.18);max-width:280px;opacity:0;transition:opacity .15s;z-index:10}
 .universe-tooltip.show{opacity:1}
 .universe-tooltip .tt-year{font-weight:700;color:#6a5cf0;font-size:11px}
 .universe-tooltip .tt-title{font-weight:600;margin-top:2px;line-height:1.4}
@@ -120,21 +123,16 @@ h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background
 
 <div class="universe">
   <div class="universe-header">
-    <div class="universe-title">AI 연구의 빅뱅</div>
-    <div class="universe-hint">중심 = 1943 · 바깥 = 2025 · 각도 = 분야 · 곡선 = 영향 관계 · 점 클릭 → 해당 논문</div>
+    <div class="universe-title">AI 연구의 빅뱅 · Branch Tree</div>
+    <div class="universe-hint">왼쪽 빅뱅(1943) → 오른쪽 현재(2025) · 가지 = 영향 관계 · 색 = 분야 · 점 클릭 → 해당 논문</div>
   </div>
-  <div style="position:relative">
-    <svg class="universe-svg" id="universeSvg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
+  <div class="universe-scroll">
+    <svg class="universe-svg" id="universeSvg" viewBox="0 0 1600 1100" preserveAspectRatio="xMidYMid meet">
       <defs>
         <radialGradient id="bigbang-grad">
           <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
           <stop offset="40%" stop-color="#fff3a8" stop-opacity="0.95"/>
           <stop offset="100%" stop-color="#6a5cf0" stop-opacity="0.75"/>
-        </radialGradient>
-        <radialGradient id="bigbang-glow">
-          <stop offset="0%" stop-color="#6a5cf0" stop-opacity="0.18"/>
-          <stop offset="60%" stop-color="#6a5cf0" stop-opacity="0.05"/>
-          <stop offset="100%" stop-color="#6a5cf0" stop-opacity="0"/>
         </radialGradient>
       </defs>
     </svg>
@@ -665,168 +663,199 @@ function clearLineage(){
   lineageBanner.classList.remove('active');
 }
 
-// ===== Big Bang Universe Visualization =====
+// ===== Big Bang Branch Tree Visualization =====
 const universeSvg = document.getElementById('universeSvg');
 const universeTooltip = document.getElementById('universeTooltip');
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const U_CENTER = {x:500, y:500};
-const U_MIN_R = 70;
-const U_MAX_R = 460;
-const U_MIN_Y = 1943;
-const U_MAX_Y = 2025;
-const U_CAT_KEYS = Object.keys(categories);
-const U_N_CAT = U_CAT_KEYS.length;
-const U_SECTOR = (Math.PI * 2) / U_N_CAT;
-const U_CAT_IDX = {};
-U_CAT_KEYS.forEach((k,i)=>U_CAT_IDX[k]=i);
+
+const VB_W = 1600;
+const VB_H = 1100;
+const MARGIN = {l:90, r:80, t:50, b:70};
+const Y_MIN = 1943;
+const Y_MAX = 2025;
+const PLOT_W = VB_W - MARGIN.l - MARGIN.r;
+const PLOT_H = VB_H - MARGIN.t - MARGIN.b;
+
 const paperPos = {};
+let primaryParentOf = {};
+let rootIds = [];
 
 function computePositions(){
-  const groups = {};
-  papers.forEach(p=>{
-    const k = p.cat + '-' + p.y;
-    if(!groups[k]) groups[k] = [];
-    groups[k].push(p);
+  // Build primary-parent tree (first existing ref = primary parent)
+  primaryParentOf = {};
+  const childrenOf = {};
+  papers.forEach(p => { childrenOf[p.id] = []; });
+  papers.forEach(p => {
+    if (p.refs && p.refs.length > 0) {
+      const parent = p.refs.find(r => paperById[r]);
+      if (parent) {
+        primaryParentOf[p.id] = parent;
+        childrenOf[parent].push(p.id);
+      }
+    }
   });
-  Object.values(groups).forEach(arr=>{
-    arr.forEach((p,i)=>{
-      const yearNorm = (p.y - U_MIN_Y) / (U_MAX_Y - U_MIN_Y);
-      const r = U_MIN_R + yearNorm * (U_MAX_R - U_MIN_R);
-      // Start at top (-PI/2) and rotate clockwise; center each sector
-      const baseAngle = U_CAT_IDX[p.cat] * U_SECTOR - Math.PI/2 + U_SECTOR/2;
-      const total = arr.length;
-      const offset = total > 1 ? (i - (total - 1)/2) / total * U_SECTOR * 0.78 : 0;
-      const angle = baseAngle + offset;
-      paperPos[p.id] = {
-        x: U_CENTER.x + r * Math.cos(angle),
-        y: U_CENTER.y + r * Math.sin(angle),
-        angle, r
-      };
+  // Sort children stably by year then id so layout is deterministic
+  Object.keys(childrenOf).forEach(k => {
+    childrenOf[k].sort((a,b) => {
+      const ya = paperById[a].y, yb = paperById[b].y;
+      if (ya !== yb) return ya - yb;
+      return a.localeCompare(b);
     });
+  });
+
+  // Roots = papers with no primary parent in dataset; sort by year so mcp43 is first
+  rootIds = papers
+    .filter(p => !primaryParentOf[p.id])
+    .map(p => p.id)
+    .sort((a,b) => paperById[a].y - paperById[b].y || a.localeCompare(b));
+
+  // Assign yIndex via post-order DFS (leaves get sequential slots, parents = mid of children)
+  let leafCounter = 0;
+  function assignY(id){
+    const kids = childrenOf[id];
+    if (!kids || kids.length === 0) {
+      paperPos[id] = { yIndex: leafCounter++ };
+      return;
+    }
+    kids.forEach(assignY);
+    const ys = kids.map(k => paperPos[k].yIndex);
+    paperPos[id] = { yIndex: (Math.min(...ys) + Math.max(...ys)) / 2 };
+  }
+  rootIds.forEach(assignY);
+
+  // Convert to pixel coordinates: x by year, y by yIndex
+  const denom = Math.max(1, leafCounter - 1);
+  papers.forEach(p => {
+    const pos = paperPos[p.id];
+    if (!pos) return;
+    pos.x = MARGIN.l + (p.y - Y_MIN) / (Y_MAX - Y_MIN) * PLOT_W;
+    pos.y = MARGIN.t + (pos.yIndex / denom) * PLOT_H;
   });
 }
 
 function renderUniverse(){
-  // Determine visible papers based on current filters/search
+  // Determine visible papers
   const q = searchEl.value.toLowerCase();
   const visible = new Set();
-  papers.forEach(p=>{
-    if(activeFilters.size > 0 && !activeFilters.has(p.cat)) return;
-    if(q && !`${p.t} ${p.a} ${p.af} ${p.contribution} ${p.problem} ${p.impact}`.toLowerCase().includes(q)) return;
+  papers.forEach(p => {
+    if (activeFilters.size > 0 && !activeFilters.has(p.cat)) return;
+    if (q && !`${p.t} ${p.a} ${p.af} ${p.contribution} ${p.problem} ${p.impact}`.toLowerCase().includes(q)) return;
     visible.add(p.id);
   });
 
   // Preserve <defs>, clear everything else
   const defs = universeSvg.querySelector('defs');
-  while(universeSvg.firstChild) universeSvg.removeChild(universeSvg.firstChild);
-  if(defs) universeSvg.appendChild(defs);
+  while (universeSvg.firstChild) universeSvg.removeChild(universeSvg.firstChild);
+  if (defs) universeSvg.appendChild(defs);
 
-  // Background glow
-  const glow = document.createElementNS(SVG_NS,'circle');
-  glow.setAttribute('cx',U_CENTER.x);
-  glow.setAttribute('cy',U_CENTER.y);
-  glow.setAttribute('r','280');
-  glow.setAttribute('fill','url(#bigbang-glow)');
-  universeSvg.appendChild(glow);
-
-  // Decade rings + labels
-  const ringYears = [1960,1980,2000,2010,2020];
-  ringYears.forEach(d=>{
-    const yearNorm = (d - U_MIN_Y) / (U_MAX_Y - U_MIN_Y);
-    const r = U_MIN_R + yearNorm * (U_MAX_R - U_MIN_R);
-    const ring = document.createElementNS(SVG_NS,'circle');
-    ring.setAttribute('class','ring');
-    ring.setAttribute('cx',U_CENTER.x);
-    ring.setAttribute('cy',U_CENTER.y);
-    ring.setAttribute('r',r);
-    universeSvg.appendChild(ring);
-    const label = document.createElementNS(SVG_NS,'text');
-    label.setAttribute('class','ring-label');
-    label.setAttribute('x',U_CENTER.x + 5);
-    label.setAttribute('y',U_CENTER.y - r + 11);
-    label.textContent = d;
-    universeSvg.appendChild(label);
+  // Decade grid + year labels
+  const axisGroup = document.createElementNS(SVG_NS,'g');
+  const decades = [1950,1960,1970,1980,1990,2000,2010,2020,2025];
+  decades.forEach(year => {
+    if (year < Y_MIN || year > Y_MAX) return;
+    const x = MARGIN.l + (year - Y_MIN) / (Y_MAX - Y_MIN) * PLOT_W;
+    const line = document.createElementNS(SVG_NS,'line');
+    line.setAttribute('class','year-grid');
+    line.setAttribute('x1',x); line.setAttribute('x2',x);
+    line.setAttribute('y1',MARGIN.t - 20); line.setAttribute('y2',VB_H - MARGIN.b + 18);
+    axisGroup.appendChild(line);
+    const lab = document.createElementNS(SVG_NS,'text');
+    lab.setAttribute('class','year-label');
+    lab.setAttribute('x',x); lab.setAttribute('y',VB_H - MARGIN.b + 40);
+    lab.setAttribute('text-anchor','middle');
+    lab.textContent = year;
+    axisGroup.appendChild(lab);
   });
+  universeSvg.appendChild(axisGroup);
 
-  // Lineage edges (drawn under nodes)
-  const edgeGroup = document.createElementNS(SVG_NS,'g');
-  papers.forEach(p=>{
-    if(!p.refs || p.refs.length === 0) return;
-    p.refs.forEach(refId=>{
+  // Edges: draw secondary refs first (under), then primary (above)
+  const secondaryEdges = document.createElementNS(SVG_NS,'g');
+  const primaryEdges = document.createElementNS(SVG_NS,'g');
+  papers.forEach(p => {
+    if (!p.refs || p.refs.length === 0) return;
+    p.refs.forEach(refId => {
       const a = paperPos[refId], b = paperPos[p.id];
-      if(!a || !b) return;
+      if (!a || !b) return;
+      const isPrimary = (primaryParentOf[p.id] === refId);
       const path = document.createElementNS(SVG_NS,'path');
-      // Curve toward center for radial flow effect
-      const mx = (a.x + b.x)/2, my = (a.y + b.y)/2;
-      const cx = U_CENTER.x + (mx - U_CENTER.x) * 0.5;
-      const cy = U_CENTER.y + (my - U_CENTER.y) * 0.5;
-      path.setAttribute('d',`M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}`);
-      path.setAttribute('class','lineage-edge');
+      // Sigmoid horizontal connector — like a branching tree
+      const dx = b.x - a.x;
+      const c1x = a.x + Math.max(40, dx * 0.5);
+      const c2x = b.x - Math.max(40, dx * 0.5);
+      path.setAttribute('d',`M${a.x},${a.y} C${c1x},${a.y} ${c2x},${b.y} ${b.x},${b.y}`);
+      path.setAttribute('class','branch-edge ' + (isPrimary ? 'primary' : 'secondary'));
+      path.setAttribute('stroke', categories[p.cat]?.color || '#888');
+
       let dimmed = false;
-      if((activeFilters.size > 0 || q) && (!visible.has(refId) || !visible.has(p.id))) dimmed = true;
-      if(activeLineage){
-        if(activeLineage.ids.has(refId) && activeLineage.ids.has(p.id)){
+      if ((activeFilters.size > 0 || q) && (!visible.has(refId) || !visible.has(p.id))) dimmed = true;
+      if (activeLineage) {
+        if (activeLineage.ids.has(refId) && activeLineage.ids.has(p.id)) {
           path.classList.add('highlight');
         } else {
           dimmed = true;
         }
       }
-      if(dimmed) path.style.opacity = '0.06';
-      edgeGroup.appendChild(path);
+      if (dimmed) path.style.opacity = '0.04';
+      (isPrimary ? primaryEdges : secondaryEdges).appendChild(path);
     });
   });
-  universeSvg.appendChild(edgeGroup);
+  universeSvg.appendChild(secondaryEdges);
+  universeSvg.appendChild(primaryEdges);
 
-  // Singularity (Big Bang point)
-  const sing = document.createElementNS(SVG_NS,'circle');
-  sing.setAttribute('class','singularity');
-  sing.setAttribute('cx',U_CENTER.x);
-  sing.setAttribute('cy',U_CENTER.y);
-  sing.setAttribute('r','15');
-  universeSvg.appendChild(sing);
-  const singLabel = document.createElementNS(SVG_NS,'text');
-  singLabel.setAttribute('class','singularity-label');
-  singLabel.setAttribute('x',U_CENTER.x);
-  singLabel.setAttribute('y',U_CENTER.y + 36);
-  singLabel.textContent = '빅뱅 · 1943';
-  universeSvg.appendChild(singLabel);
+  // Singularity at the earliest root (mcp43 expected)
+  const rootId = rootIds[0];
+  if (rootId) {
+    const rp = paperPos[rootId];
+    const sing = document.createElementNS(SVG_NS,'circle');
+    sing.setAttribute('class','singularity');
+    sing.setAttribute('cx',rp.x);
+    sing.setAttribute('cy',rp.y);
+    sing.setAttribute('r','16');
+    universeSvg.appendChild(sing);
+    const lbl = document.createElementNS(SVG_NS,'text');
+    lbl.setAttribute('class','singularity-label');
+    lbl.setAttribute('x',rp.x);
+    lbl.setAttribute('y',rp.y - 26);
+    lbl.textContent = '빅뱅 · 1943';
+    universeSvg.appendChild(lbl);
+  }
 
   // Paper nodes
   const nodeGroup = document.createElementNS(SVG_NS,'g');
-  papers.forEach(p=>{
+  papers.forEach(p => {
     const pos = paperPos[p.id];
-    if(!pos) return;
+    if (!pos) return;
     const g = document.createElementNS(SVG_NS,'g');
     g.setAttribute('class','paper-node');
     g.setAttribute('transform',`translate(${pos.x},${pos.y})`);
     const color = categories[p.cat]?.color || '#888';
     const c = document.createElementNS(SVG_NS,'circle');
-    c.setAttribute('r','3.6');
+    c.setAttribute('r','4.5');
     c.setAttribute('fill',color);
     c.setAttribute('stroke','#ffffff');
-    c.setAttribute('stroke-width','0.9');
+    c.setAttribute('stroke-width','1.2');
     g.appendChild(c);
     g.style.color = color;
 
     let dimmed = !visible.has(p.id);
-    if(activeLineage){
-      if(p.id === activeLineage.paperId){
+    if (activeLineage) {
+      if (p.id === activeLineage.paperId) {
         g.classList.add('selected');
         dimmed = false;
-      } else if(activeLineage.ids.has(p.id)){
+      } else if (activeLineage.ids.has(p.id)) {
         g.classList.add('lineage');
         dimmed = false;
       } else {
         dimmed = true;
       }
     }
-    if(dimmed) g.classList.add('dimmed');
+    if (dimmed) g.classList.add('dimmed');
 
-    g.addEventListener('click',(e)=>{
+    g.addEventListener('click',(e) => {
       e.stopPropagation();
       scrollToPaper(p.id);
     });
-    g.addEventListener('mouseenter',()=>{
+    g.addEventListener('mouseenter',() => {
       const rect = universeSvg.getBoundingClientRect();
       const vb = universeSvg.viewBox.baseVal;
       const scaleX = rect.width / vb.width;
@@ -836,7 +865,7 @@ function renderUniverse(){
       universeTooltip.style.top = (pos.y * scaleY + 14) + 'px';
       universeTooltip.classList.add('show');
     });
-    g.addEventListener('mouseleave',()=>{
+    g.addEventListener('mouseleave',() => {
       universeTooltip.classList.remove('show');
     });
     nodeGroup.appendChild(g);

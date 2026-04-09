@@ -6,83 +6,109 @@
 <title>AI 핵심 논문 타임라인 (1943-2025)</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e8;line-height:1.6}
+body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f6f7fb;color:#1f2233;line-height:1.6}
 .container{max-width:1100px;margin:0 auto;padding:20px}
-h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background:linear-gradient(135deg,#7c6cf0,#4ecdc4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.subtitle{text-align:center;color:#888;font-size:14px;margin-bottom:30px}
+h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background:linear-gradient(135deg,#6a5cf0,#19b8a8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:#6b7280;font-size:14px;margin-bottom:30px}
 .controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;align-items:center}
-.search-box{flex:1;min-width:200px;padding:10px 16px;border-radius:8px;border:1px solid #2a2a3a;background:#13131f;color:#e0e0e8;font-size:14px;outline:none}
-.search-box:focus{border-color:#7c6cf0}
+.search-box{flex:1;min-width:200px;padding:10px 16px;border-radius:8px;border:1px solid #d8dbe6;background:#ffffff;color:#1f2233;font-size:14px;outline:none;transition:border-color .2s, box-shadow .2s}
+.search-box:focus{border-color:#7c6cf0;box-shadow:0 0 0 3px rgba(124,108,240,0.12)}
 .filter-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
-.pill{padding:6px 14px;border-radius:20px;font-size:12px;border:1px solid #2a2a3a;background:#13131f;color:#999;cursor:pointer;transition:all .2s;white-space:nowrap}
-.pill:hover{border-color:#555}
+.pill{padding:6px 14px;border-radius:20px;font-size:12px;border:1px solid #d8dbe6;background:#ffffff;color:#5b607a;cursor:pointer;transition:all .2s;white-space:nowrap}
+.pill:hover{border-color:#7c6cf0;color:#1f2233}
 .pill.active{background:#7c6cf0;border-color:#7c6cf0;color:#fff}
 .stats{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.stat-card{background:#13131f;border:1px solid #2a2a3a;border-radius:10px;padding:12px 18px;flex:1;min-width:120px;text-align:center}
-.stat-num{font-size:24px;font-weight:700;color:#7c6cf0}
-.stat-label{font-size:11px;color:#888;margin-top:2px}
+.stat-card{background:#ffffff;border:1px solid #e6e8f0;border-radius:10px;padding:12px 18px;flex:1;min-width:120px;text-align:center;box-shadow:0 1px 3px rgba(31,34,51,0.04)}
+.stat-num{font-size:24px;font-weight:700;color:#6a5cf0}
+.stat-label{font-size:11px;color:#6b7280;margin-top:2px}
 .era-section{margin-bottom:32px}
-.era-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px 0;border-bottom:1px solid #1a1a2a}
+.era-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px 0;border-bottom:1px solid #e6e8f0}
 .era-dot{width:12px;height:12px;border-radius:50%}
-.era-title{font-size:18px;font-weight:600;color:#ccc}
-.era-desc{font-size:12px;color:#777;margin-left:auto}
-.paper{background:#13131f;border:1px solid #1e1e2e;border-radius:10px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .3s}
-.paper:hover{border-color:#3a3a5a;transform:translateX(4px)}
-.paper.expanded{border-color:#7c6cf0}
-.paper.lineage-active{border-color:#4ecdc4;background:#0d1a1a;box-shadow:0 0 20px rgba(78,205,196,0.15)}
-.paper.lineage-selected{border-color:#ff6b6b;background:#1a0d0d;box-shadow:0 0 24px rgba(255,107,107,0.2)}
-.paper.lineage-dimmed{opacity:0.15;pointer-events:none}
+.era-title{font-size:18px;font-weight:600;color:#2a2d40}
+.era-desc{font-size:12px;color:#6b7280;margin-left:auto}
+.paper{background:#ffffff;border:1px solid #e6e8f0;border-radius:10px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .3s;box-shadow:0 1px 3px rgba(31,34,51,0.04)}
+.paper:hover{border-color:#b9bdd0;transform:translateX(4px);box-shadow:0 4px 12px rgba(31,34,51,0.08)}
+.paper.expanded{border-color:#7c6cf0;box-shadow:0 4px 16px rgba(124,108,240,0.12)}
+.paper.lineage-active{border-color:#19b8a8;background:#f0fcfa;box-shadow:0 0 20px rgba(25,184,168,0.18)}
+.paper.lineage-selected{border-color:#ef4f6b;background:#fff5f6;box-shadow:0 0 24px rgba(239,79,107,0.22)}
+.paper.lineage-dimmed{opacity:0.25;pointer-events:none}
 .paper-top{display:flex;align-items:flex-start;gap:12px}
-.paper-year{background:#1a1a2e;color:#7c6cf0;font-size:13px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;min-width:50px;text-align:center}
+.paper-year{background:#f1eefe;color:#6a5cf0;font-size:13px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;min-width:50px;text-align:center}
 .paper-info{flex:1;min-width:0}
-.paper-title{font-size:15px;font-weight:600;color:#e0e0e8;margin-bottom:4px}
-.paper-authors{font-size:12px;color:#999;margin-bottom:3px}
-.paper-affiliation{font-size:11px;color:#666}
+.paper-title{font-size:15px;font-weight:600;color:#1f2233;margin-bottom:4px}
+.paper-authors{font-size:12px;color:#5b607a;margin-bottom:3px}
+.paper-affiliation{font-size:11px;color:#8a8fa6}
 .paper-cat{font-size:10px;padding:3px 8px;border-radius:10px;display:inline-block;margin-top:4px}
-.paper-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px solid #1e1e2e}
+.paper-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px solid #e6e8f0}
 .paper.expanded .paper-detail{display:block}
 .detail-section{margin-bottom:10px}
-.detail-label{font-size:11px;color:#7c6cf0;font-weight:600;margin-bottom:4px;text-transform:uppercase}
-.detail-text{font-size:13px;color:#bbb;line-height:1.7}
-.paper-link{display:inline-block;margin-top:8px;color:#4ecdc4;font-size:12px;text-decoration:none;border:1px solid #4ecdc4;padding:4px 12px;border-radius:6px}
-.paper-link:hover{background:#4ecdc4;color:#0a0a0f}
+.detail-label{font-size:11px;color:#6a5cf0;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em}
+.detail-text{font-size:13px;color:#3b3f55;line-height:1.7}
+.paper-link{display:inline-block;margin-top:8px;color:#19b8a8;font-size:12px;text-decoration:none;border:1px solid #19b8a8;padding:4px 12px;border-radius:6px}
+.paper-link:hover{background:#19b8a8;color:#ffffff}
 .paper-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.lineage-btn{display:inline-flex;align-items:center;gap:4px;margin-top:8px;color:#ff6b6b;font-size:12px;text-decoration:none;border:1px solid #ff6b6b;padding:4px 12px;border-radius:6px;cursor:pointer;background:transparent;transition:all .2s}
-.lineage-btn:hover{background:#ff6b6b;color:#0a0a0f}
+.lineage-btn{display:inline-flex;align-items:center;gap:4px;margin-top:8px;color:#ef4f6b;font-size:12px;text-decoration:none;border:1px solid #ef4f6b;padding:4px 12px;border-radius:6px;cursor:pointer;background:transparent;transition:all .2s}
+.lineage-btn:hover{background:#ef4f6b;color:#ffffff}
 
 /* Lineage banner */
-.lineage-banner{display:none;margin-bottom:24px;padding:16px 20px;background:linear-gradient(135deg,#1a0d0d,#0d1a1a);border:1px solid #ff6b6b44;border-radius:12px;position:relative}
+.lineage-banner{display:none;margin-bottom:24px;padding:16px 20px;background:linear-gradient(135deg,#fff5f6,#f0fcfa);border:1px solid #ef4f6b55;border-radius:12px;position:relative;box-shadow:0 4px 16px rgba(239,79,107,0.08)}
 .lineage-banner.active{display:block}
-.lineage-banner-title{font-size:15px;font-weight:600;color:#ff6b6b;margin-bottom:6px}
-.lineage-banner-desc{font-size:13px;color:#999;margin-bottom:10px}
+.lineage-banner-title{font-size:15px;font-weight:700;color:#ef4f6b;margin-bottom:6px}
+.lineage-banner-desc{font-size:13px;color:#5b607a;margin-bottom:10px}
 .lineage-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
-.lineage-flow-item{font-size:12px;padding:4px 10px;border-radius:6px;background:#1e1e2e;color:#4ecdc4;border:1px solid #4ecdc444;cursor:pointer;transition:all .2s}
-.lineage-flow-item:hover{background:#4ecdc4;color:#0a0a0f}
-.lineage-flow-item.selected{background:#ff6b6b22;color:#ff6b6b;border-color:#ff6b6b}
-.lineage-flow-arrow{color:#555;font-size:14px}
-.lineage-close{position:absolute;top:12px;right:14px;background:none;border:1px solid #555;color:#999;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.lineage-close:hover{border-color:#ff6b6b;color:#ff6b6b}
-.lineage-step{font-size:10px;color:#666;margin-right:2px}
+.lineage-flow-item{font-size:12px;padding:4px 10px;border-radius:6px;background:#ffffff;color:#19b8a8;border:1px solid #19b8a855;cursor:pointer;transition:all .2s}
+.lineage-flow-item:hover{background:#19b8a8;color:#ffffff}
+.lineage-flow-item.selected{background:#ef4f6b22;color:#ef4f6b;border-color:#ef4f6b}
+.lineage-flow-arrow{color:#b9bdd0;font-size:14px}
+.lineage-close{position:absolute;top:12px;right:14px;background:#ffffff;border:1px solid #d8dbe6;color:#6b7280;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.lineage-close:hover{border-color:#ef4f6b;color:#ef4f6b}
+.lineage-step{font-size:10px;color:#8a8fa6;margin-right:2px}
 
-.cat-foundations{border-left:3px solid #7c6cf0}.cat-foundations .paper-cat{background:#7c6cf022;color:#7c6cf0;border:1px solid #7c6cf044}
-.cat-optimization{border-left:3px solid #4ecdc4}.cat-optimization .paper-cat{background:#4ecdc422;color:#4ecdc4;border:1px solid #4ecdc444}
-.cat-cnn{border-left:3px solid #f7b731}.cat-cnn .paper-cat{background:#f7b73122;color:#f7b731;border:1px solid #f7b73144}
-.cat-rnn{border-left:3px solid #fc5c65}.cat-rnn .paper-cat{background:#fc5c6522;color:#fc5c65;border:1px solid #fc5c6544}
-.cat-generative{border-left:3px solid #a55eea}.cat-generative .paper-cat{background:#a55eea22;color:#a55eea;border:1px solid #a55eea44}
-.cat-transformer{border-left:3px solid #ff6b6b}.cat-transformer .paper-cat{background:#ff6b6b22;color:#ff6b6b;border:1px solid #ff6b6b44}
-.cat-vision{border-left:3px solid #26de81}.cat-vision .paper-cat{background:#26de8122;color:#26de81;border:1px solid #26de8144}
-.cat-rl{border-left:3px solid #fd9644}.cat-rl .paper-cat{background:#fd964422;color:#fd9644;border:1px solid #fd964444}
-.cat-selfsup{border-left:3px solid #45aaf2}.cat-selfsup .paper-cat{background:#45aaf222;color:#45aaf2;border:1px solid #45aaf244}
-.cat-graph{border-left:3px solid #d1d8e0}.cat-graph .paper-cat{background:#d1d8e022;color:#d1d8e0;border:1px solid #d1d8e044}
-.cat-scaling{border-left:3px solid #f8a5c2}.cat-scaling .paper-cat{background:#f8a5c222;color:#f8a5c2;border:1px solid #f8a5c244}
-.cat-llm{border-left:3px solid #e056c1}.cat-llm .paper-cat{background:#e056c122;color:#e056c1;border:1px solid #e056c144}
-.cat-vla{border-left:3px solid #00d2d3}.cat-vla .paper-cat{background:#00d2d322;color:#00d2d3;border:1px solid #00d2d344}
-.cat-ad{border-left:3px solid #c4e538}.cat-ad .paper-cat{background:#c4e53822;color:#c4e538;border:1px solid #c4e53844}
-.cat-multimodal{border-left:3px solid #ffa502}.cat-multimodal .paper-cat{background:#ffa50222;color:#ffa502;border:1px solid #ffa50244}
-.no-results{text-align:center;padding:40px;color:#666;font-size:14px}
-.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;padding:12px;background:#13131f;border-radius:10px;border:1px solid #1e1e2e}
-.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#888}
+.cat-foundations{border-left:3px solid #6a5cf0}.cat-foundations .paper-cat{background:#6a5cf015;color:#6a5cf0;border:1px solid #6a5cf044}
+.cat-optimization{border-left:3px solid #19b8a8}.cat-optimization .paper-cat{background:#19b8a815;color:#19b8a8;border:1px solid #19b8a844}
+.cat-cnn{border-left:3px solid #d99a14}.cat-cnn .paper-cat{background:#d99a1415;color:#d99a14;border:1px solid #d99a1444}
+.cat-rnn{border-left:3px solid #ef4f6b}.cat-rnn .paper-cat{background:#ef4f6b15;color:#ef4f6b;border:1px solid #ef4f6b44}
+.cat-generative{border-left:3px solid #8e3edb}.cat-generative .paper-cat{background:#8e3edb15;color:#8e3edb;border:1px solid #8e3edb44}
+.cat-transformer{border-left:3px solid #e63b58}.cat-transformer .paper-cat{background:#e63b5815;color:#e63b58;border:1px solid #e63b5844}
+.cat-vision{border-left:3px solid #1ea861}.cat-vision .paper-cat{background:#1ea86115;color:#1ea861;border:1px solid #1ea86144}
+.cat-rl{border-left:3px solid #e07b1f}.cat-rl .paper-cat{background:#e07b1f15;color:#e07b1f;border:1px solid #e07b1f44}
+.cat-selfsup{border-left:3px solid #2a90df}.cat-selfsup .paper-cat{background:#2a90df15;color:#2a90df;border:1px solid #2a90df44}
+.cat-graph{border-left:3px solid #7d8398}.cat-graph .paper-cat{background:#7d839815;color:#7d8398;border:1px solid #7d839844}
+.cat-scaling{border-left:3px solid #d96793}.cat-scaling .paper-cat{background:#d6679315;color:#d96793;border:1px solid #d9679344}
+.cat-llm{border-left:3px solid #c238a3}.cat-llm .paper-cat{background:#c238a315;color:#c238a3;border:1px solid #c238a344}
+.cat-vla{border-left:3px solid #00a8a9}.cat-vla .paper-cat{background:#00a8a915;color:#00a8a9;border:1px solid #00a8a944}
+.cat-ad{border-left:3px solid #8aab1f}.cat-ad .paper-cat{background:#8aab1f15;color:#8aab1f;border:1px solid #8aab1f44}
+.cat-multimodal{border-left:3px solid #d98700}.cat-multimodal .paper-cat{background:#d9870015;color:#d98700;border:1px solid #d9870044}
+.no-results{text-align:center;padding:40px;color:#8a8fa6;font-size:14px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;padding:12px;background:#ffffff;border-radius:10px;border:1px solid #e6e8f0;box-shadow:0 1px 3px rgba(31,34,51,0.04)}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#5b607a}
 .legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* ===== Big Bang Universe Visualization ===== */
+.universe{position:relative;width:100%;background:radial-gradient(ellipse at center,#ffffff 0%,#f4f6fc 60%,#eaedf7 100%);border:1px solid #e6e8f0;border-radius:16px;margin-bottom:28px;overflow:hidden;box-shadow:0 4px 24px rgba(31,34,51,0.06)}
+.universe-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px 4px;flex-wrap:wrap;gap:8px}
+.universe-title{font-size:14px;font-weight:700;color:#2a2d40;display:flex;align-items:center;gap:8px}
+.universe-title::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#ffffff,#6a5cf0);box-shadow:0 0 12px #6a5cf0aa}
+.universe-hint{font-size:11px;color:#8a8fa6}
+.universe-svg{display:block;width:100%;max-width:760px;height:auto;margin:0 auto;padding:8px 12px 18px}
+.universe-svg .ring{fill:none;stroke:#d8dbe6;stroke-width:1;stroke-dasharray:2 4;opacity:0.7}
+.universe-svg .ring-label{font-size:9px;fill:#9ea3b8;font-family:'Pretendard',sans-serif}
+.universe-svg .lineage-edge{stroke:#c8ccdc;stroke-width:0.7;fill:none;opacity:0.5;transition:all .25s}
+.universe-svg .lineage-edge.highlight{stroke:#ef4f6b;stroke-width:1.6;opacity:0.95}
+.universe-svg .paper-node{cursor:pointer;transition:all .2s}
+.universe-svg .paper-node circle{transition:all .2s}
+.universe-svg .paper-node:hover circle{r:5.5;filter:drop-shadow(0 0 6px currentColor)}
+.universe-svg .paper-node.dimmed{opacity:0.18}
+.universe-svg .paper-node.lineage circle{r:4.5}
+.universe-svg .paper-node.selected circle{r:6.5;stroke:#ef4f6b;stroke-width:2}
+.universe-svg .paper-node.selected{filter:drop-shadow(0 0 8px #ef4f6baa)}
+.universe-svg .singularity{fill:url(#bigbang-grad);filter:drop-shadow(0 0 18px #6a5cf0cc)}
+.universe-svg .singularity-label{font-size:10px;font-weight:700;fill:#2a2d40;text-anchor:middle;font-family:'Pretendard',sans-serif}
+.universe-tooltip{position:absolute;pointer-events:none;background:#ffffff;border:1px solid #d8dbe6;border-radius:8px;padding:8px 12px;font-size:12px;color:#1f2233;box-shadow:0 6px 20px rgba(31,34,51,0.18);max-width:260px;opacity:0;transition:opacity .15s;z-index:10}
+.universe-tooltip.show{opacity:1}
+.universe-tooltip .tt-year{font-weight:700;color:#6a5cf0;font-size:11px}
+.universe-tooltip .tt-title{font-weight:600;margin-top:2px;line-height:1.4}
+.universe-tooltip .tt-cat{font-size:10px;color:#8a8fa6;margin-top:3px}
 </style>
 </head>
 <body>
@@ -91,6 +117,30 @@ h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background
 <p class="subtitle">1943 ~ 2025 | 방법론적 돌파구를 이룬 핵심 논문들의 흐름</p>
 
 <div class="stats" id="stats"></div>
+
+<div class="universe">
+  <div class="universe-header">
+    <div class="universe-title">AI 연구의 빅뱅</div>
+    <div class="universe-hint">중심 = 1943 · 바깥 = 2025 · 각도 = 분야 · 곡선 = 영향 관계 · 점 클릭 → 해당 논문</div>
+  </div>
+  <div style="position:relative">
+    <svg class="universe-svg" id="universeSvg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <radialGradient id="bigbang-grad">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+          <stop offset="40%" stop-color="#fff3a8" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="#6a5cf0" stop-opacity="0.75"/>
+        </radialGradient>
+        <radialGradient id="bigbang-glow">
+          <stop offset="0%" stop-color="#6a5cf0" stop-opacity="0.18"/>
+          <stop offset="60%" stop-color="#6a5cf0" stop-opacity="0.05"/>
+          <stop offset="100%" stop-color="#6a5cf0" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+    </svg>
+    <div class="universe-tooltip" id="universeTooltip"></div>
+  </div>
+</div>
 
 <div class="controls">
 <input type="text" class="search-box" id="search" placeholder="논문 제목, 저자, 키워드 검색...">
@@ -108,21 +158,21 @@ h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background
 
 <script>
 const categories = {
-  foundations: {name:"Foundations & Neural Networks",color:"#7c6cf0"},
-  optimization: {name:"Optimization & Training",color:"#4ecdc4"},
-  cnn: {name:"CNN Architectures",color:"#f7b731"},
-  rnn: {name:"RNN & Sequence Models",color:"#fc5c65"},
-  generative: {name:"Generative Models",color:"#a55eea"},
-  transformer: {name:"Attention & Transformers",color:"#ff6b6b"},
-  vision: {name:"Vision Models",color:"#26de81"},
-  rl: {name:"Reinforcement Learning",color:"#fd9644"},
-  selfsup: {name:"Self-Supervised & Representation",color:"#45aaf2"},
-  graph: {name:"Graph Neural Networks",color:"#d1d8e0"},
-  scaling: {name:"Architecture & Scaling",color:"#f8a5c2"},
-  llm: {name:"LLM & Foundation Models",color:"#e056c1"},
-  vla: {name:"VLA & Embodied AI",color:"#00d2d3"},
-  ad: {name:"E2E Autonomous Driving",color:"#c4e538"},
-  multimodal: {name:"Multimodal Models",color:"#ffa502"}
+  foundations: {name:"Foundations & Neural Networks",color:"#6a5cf0"},
+  optimization: {name:"Optimization & Training",color:"#19b8a8"},
+  cnn: {name:"CNN Architectures",color:"#d99a14"},
+  rnn: {name:"RNN & Sequence Models",color:"#ef4f6b"},
+  generative: {name:"Generative Models",color:"#8e3edb"},
+  transformer: {name:"Attention & Transformers",color:"#e63b58"},
+  vision: {name:"Vision Models",color:"#1ea861"},
+  rl: {name:"Reinforcement Learning",color:"#e07b1f"},
+  selfsup: {name:"Self-Supervised & Representation",color:"#2a90df"},
+  graph: {name:"Graph Neural Networks",color:"#7d8398"},
+  scaling: {name:"Architecture & Scaling",color:"#d96793"},
+  llm: {name:"LLM & Foundation Models",color:"#c238a3"},
+  vla: {name:"VLA & Embodied AI",color:"#00a8a9"},
+  ad: {name:"E2E Autonomous Driving",color:"#8aab1f"},
+  multimodal: {name:"Multimodal Models",color:"#d98700"}
 };
 
 const papers = [
@@ -615,6 +665,187 @@ function clearLineage(){
   lineageBanner.classList.remove('active');
 }
 
+// ===== Big Bang Universe Visualization =====
+const universeSvg = document.getElementById('universeSvg');
+const universeTooltip = document.getElementById('universeTooltip');
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const U_CENTER = {x:500, y:500};
+const U_MIN_R = 70;
+const U_MAX_R = 460;
+const U_MIN_Y = 1943;
+const U_MAX_Y = 2025;
+const U_CAT_KEYS = Object.keys(categories);
+const U_N_CAT = U_CAT_KEYS.length;
+const U_SECTOR = (Math.PI * 2) / U_N_CAT;
+const U_CAT_IDX = {};
+U_CAT_KEYS.forEach((k,i)=>U_CAT_IDX[k]=i);
+const paperPos = {};
+
+function computePositions(){
+  const groups = {};
+  papers.forEach(p=>{
+    const k = p.cat + '-' + p.y;
+    if(!groups[k]) groups[k] = [];
+    groups[k].push(p);
+  });
+  Object.values(groups).forEach(arr=>{
+    arr.forEach((p,i)=>{
+      const yearNorm = (p.y - U_MIN_Y) / (U_MAX_Y - U_MIN_Y);
+      const r = U_MIN_R + yearNorm * (U_MAX_R - U_MIN_R);
+      // Start at top (-PI/2) and rotate clockwise; center each sector
+      const baseAngle = U_CAT_IDX[p.cat] * U_SECTOR - Math.PI/2 + U_SECTOR/2;
+      const total = arr.length;
+      const offset = total > 1 ? (i - (total - 1)/2) / total * U_SECTOR * 0.78 : 0;
+      const angle = baseAngle + offset;
+      paperPos[p.id] = {
+        x: U_CENTER.x + r * Math.cos(angle),
+        y: U_CENTER.y + r * Math.sin(angle),
+        angle, r
+      };
+    });
+  });
+}
+
+function renderUniverse(){
+  // Determine visible papers based on current filters/search
+  const q = searchEl.value.toLowerCase();
+  const visible = new Set();
+  papers.forEach(p=>{
+    if(activeFilters.size > 0 && !activeFilters.has(p.cat)) return;
+    if(q && !`${p.t} ${p.a} ${p.af} ${p.contribution} ${p.problem} ${p.impact}`.toLowerCase().includes(q)) return;
+    visible.add(p.id);
+  });
+
+  // Preserve <defs>, clear everything else
+  const defs = universeSvg.querySelector('defs');
+  while(universeSvg.firstChild) universeSvg.removeChild(universeSvg.firstChild);
+  if(defs) universeSvg.appendChild(defs);
+
+  // Background glow
+  const glow = document.createElementNS(SVG_NS,'circle');
+  glow.setAttribute('cx',U_CENTER.x);
+  glow.setAttribute('cy',U_CENTER.y);
+  glow.setAttribute('r','280');
+  glow.setAttribute('fill','url(#bigbang-glow)');
+  universeSvg.appendChild(glow);
+
+  // Decade rings + labels
+  const ringYears = [1960,1980,2000,2010,2020];
+  ringYears.forEach(d=>{
+    const yearNorm = (d - U_MIN_Y) / (U_MAX_Y - U_MIN_Y);
+    const r = U_MIN_R + yearNorm * (U_MAX_R - U_MIN_R);
+    const ring = document.createElementNS(SVG_NS,'circle');
+    ring.setAttribute('class','ring');
+    ring.setAttribute('cx',U_CENTER.x);
+    ring.setAttribute('cy',U_CENTER.y);
+    ring.setAttribute('r',r);
+    universeSvg.appendChild(ring);
+    const label = document.createElementNS(SVG_NS,'text');
+    label.setAttribute('class','ring-label');
+    label.setAttribute('x',U_CENTER.x + 5);
+    label.setAttribute('y',U_CENTER.y - r + 11);
+    label.textContent = d;
+    universeSvg.appendChild(label);
+  });
+
+  // Lineage edges (drawn under nodes)
+  const edgeGroup = document.createElementNS(SVG_NS,'g');
+  papers.forEach(p=>{
+    if(!p.refs || p.refs.length === 0) return;
+    p.refs.forEach(refId=>{
+      const a = paperPos[refId], b = paperPos[p.id];
+      if(!a || !b) return;
+      const path = document.createElementNS(SVG_NS,'path');
+      // Curve toward center for radial flow effect
+      const mx = (a.x + b.x)/2, my = (a.y + b.y)/2;
+      const cx = U_CENTER.x + (mx - U_CENTER.x) * 0.5;
+      const cy = U_CENTER.y + (my - U_CENTER.y) * 0.5;
+      path.setAttribute('d',`M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}`);
+      path.setAttribute('class','lineage-edge');
+      let dimmed = false;
+      if((activeFilters.size > 0 || q) && (!visible.has(refId) || !visible.has(p.id))) dimmed = true;
+      if(activeLineage){
+        if(activeLineage.ids.has(refId) && activeLineage.ids.has(p.id)){
+          path.classList.add('highlight');
+        } else {
+          dimmed = true;
+        }
+      }
+      if(dimmed) path.style.opacity = '0.06';
+      edgeGroup.appendChild(path);
+    });
+  });
+  universeSvg.appendChild(edgeGroup);
+
+  // Singularity (Big Bang point)
+  const sing = document.createElementNS(SVG_NS,'circle');
+  sing.setAttribute('class','singularity');
+  sing.setAttribute('cx',U_CENTER.x);
+  sing.setAttribute('cy',U_CENTER.y);
+  sing.setAttribute('r','15');
+  universeSvg.appendChild(sing);
+  const singLabel = document.createElementNS(SVG_NS,'text');
+  singLabel.setAttribute('class','singularity-label');
+  singLabel.setAttribute('x',U_CENTER.x);
+  singLabel.setAttribute('y',U_CENTER.y + 36);
+  singLabel.textContent = '빅뱅 · 1943';
+  universeSvg.appendChild(singLabel);
+
+  // Paper nodes
+  const nodeGroup = document.createElementNS(SVG_NS,'g');
+  papers.forEach(p=>{
+    const pos = paperPos[p.id];
+    if(!pos) return;
+    const g = document.createElementNS(SVG_NS,'g');
+    g.setAttribute('class','paper-node');
+    g.setAttribute('transform',`translate(${pos.x},${pos.y})`);
+    const color = categories[p.cat]?.color || '#888';
+    const c = document.createElementNS(SVG_NS,'circle');
+    c.setAttribute('r','3.6');
+    c.setAttribute('fill',color);
+    c.setAttribute('stroke','#ffffff');
+    c.setAttribute('stroke-width','0.9');
+    g.appendChild(c);
+    g.style.color = color;
+
+    let dimmed = !visible.has(p.id);
+    if(activeLineage){
+      if(p.id === activeLineage.paperId){
+        g.classList.add('selected');
+        dimmed = false;
+      } else if(activeLineage.ids.has(p.id)){
+        g.classList.add('lineage');
+        dimmed = false;
+      } else {
+        dimmed = true;
+      }
+    }
+    if(dimmed) g.classList.add('dimmed');
+
+    g.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      scrollToPaper(p.id);
+    });
+    g.addEventListener('mouseenter',()=>{
+      const rect = universeSvg.getBoundingClientRect();
+      const vb = universeSvg.viewBox.baseVal;
+      const scaleX = rect.width / vb.width;
+      const scaleY = rect.height / vb.height;
+      universeTooltip.innerHTML = `<div class="tt-year">${p.y}</div><div class="tt-title">${p.t}</div><div class="tt-cat">${categories[p.cat].name}</div>`;
+      universeTooltip.style.left = (pos.x * scaleX + 14) + 'px';
+      universeTooltip.style.top = (pos.y * scaleY + 14) + 'px';
+      universeTooltip.classList.add('show');
+    });
+    g.addEventListener('mouseleave',()=>{
+      universeTooltip.classList.remove('show');
+    });
+    nodeGroup.appendChild(g);
+  });
+  universeSvg.appendChild(nodeGroup);
+}
+
+computePositions();
+
 function showLineage(paperId, evt){
   if(evt) evt.stopPropagation();
   const ids = getLineage(paperId);
@@ -666,12 +897,12 @@ function render(){
 
   // Group by era
   const eras = [
-    {name:"태동기",range:[1940,1989],color:"#7c6cf0",desc:"뉴런 모델 → 역전파"},
-    {name:"기반 확립기",range:[1990,2011],color:"#4ecdc4",desc:"LSTM, SVM, DBN"},
-    {name:"딥러닝 혁명",range:[2012,2016],color:"#f7b731",desc:"AlexNet → AlphaGo"},
-    {name:"Transformer 시대",range:[2017,2019],color:"#ff6b6b",desc:"Attention → GPT-2"},
-    {name:"Foundation Model 시대",range:[2020,2022],color:"#a55eea",desc:"GPT-3, ViT, Diffusion"},
-    {name:"AGI를 향하여",range:[2023,2025],color:"#00d2d3",desc:"GPT-4, VLA, E2E AD"}
+    {name:"태동기",range:[1940,1989],color:"#6a5cf0",desc:"뉴런 모델 → 역전파"},
+    {name:"기반 확립기",range:[1990,2011],color:"#19b8a8",desc:"LSTM, SVM, DBN"},
+    {name:"딥러닝 혁명",range:[2012,2016],color:"#d99a14",desc:"AlexNet → AlphaGo"},
+    {name:"Transformer 시대",range:[2017,2019],color:"#e63b58",desc:"Attention → GPT-2"},
+    {name:"Foundation Model 시대",range:[2020,2022],color:"#8e3edb",desc:"GPT-3, ViT, Diffusion"},
+    {name:"AGI를 향하여",range:[2023,2025],color:"#00a8a9",desc:"GPT-4, VLA, E2E AD"}
   ];
 
   let html = '';
@@ -737,6 +968,8 @@ function render(){
 
   if(filtered.length===0) html = '<div class="no-results">검색 결과가 없습니다.</div>';
   timelineEl.innerHTML = html;
+
+  renderUniverse();
 }
 
 render();

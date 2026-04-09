@@ -80,9 +80,18 @@ h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background
 .cat-ad{border-left:3px solid #8aab1f}.cat-ad .paper-cat{background:#8aab1f15;color:#8aab1f;border:1px solid #8aab1f44}
 .cat-multimodal{border-left:3px solid #d98700}.cat-multimodal .paper-cat{background:#d9870015;color:#d98700;border:1px solid #d9870044}
 .no-results{text-align:center;padding:40px;color:#8a8fa6;font-size:14px}
-.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;padding:12px;background:#ffffff;border-radius:10px;border:1px solid #e6e8f0;box-shadow:0 1px 3px rgba(31,34,51,0.04)}
-.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#5b607a}
-.legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* ===== Legend (also acts as filter) ===== */
+.legend-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;padding:14px 16px;background:#ffffff;border:1px solid #e6e8f0;border-radius:12px;box-shadow:0 1px 3px rgba(31,34,51,0.04);align-items:center}
+.legend-bar .lb-label{font-size:10px;color:#8a8fa6;margin-right:6px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.legend-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:18px;border:1.5px solid #e0e3ee;background:#f9fafd;color:#3b3f55;font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;line-height:1}
+.legend-pill:hover{border-color:#9ea3b8;background:#ffffff;transform:translateY(-1px)}
+.legend-pill.active{border-color:var(--cat-color, #6a5cf0);background:#ffffff;box-shadow:0 0 0 1px var(--cat-color, #6a5cf0), 0 2px 8px rgba(31,34,51,0.06)}
+.legend-pill .legend-swatch{display:inline-block;width:13px;height:13px;border-radius:4px;flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,0.05) inset}
+.legend-pill.all{background:#1f2233;color:#fff;border-color:#1f2233}
+.legend-pill.all .legend-swatch{display:none}
+.legend-pill.all:hover{background:#2a2d40;border-color:#2a2d40}
+.legend-pill.all.active{background:#6a5cf0;border-color:#6a5cf0;box-shadow:0 2px 8px rgba(106,92,240,0.25)}
 
 /* ===== Big Bang Branch Tree ===== */
 .universe{position:relative;width:100%;background:linear-gradient(180deg,#ffffff 0%,#f4f6fc 100%);border:1px solid #e6e8f0;border-radius:16px;margin-bottom:28px;overflow:hidden;box-shadow:0 4px 24px rgba(31,34,51,0.06)}
@@ -107,7 +116,7 @@ h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background
 .universe-svg .paper-node.selected{filter:drop-shadow(0 0 10px #ef4f6baa)}
 .universe-svg .singularity{fill:url(#bigbang-grad);filter:drop-shadow(0 0 22px #6a5cf0cc)}
 .universe-svg .singularity-label{font-size:15px;font-weight:700;fill:#2a2d40;text-anchor:middle;font-family:'Pretendard',sans-serif}
-.universe-tooltip{position:absolute;pointer-events:none;background:#ffffff;border:1px solid #d8dbe6;border-radius:8px;padding:8px 12px;font-size:12px;color:#1f2233;box-shadow:0 6px 20px rgba(31,34,51,0.18);max-width:280px;opacity:0;transition:opacity .15s;z-index:10}
+.universe-tooltip{position:fixed;pointer-events:none;background:#ffffff;border:1px solid #d8dbe6;border-radius:8px;padding:8px 12px;font-size:12px;color:#1f2233;box-shadow:0 6px 20px rgba(31,34,51,0.18);max-width:280px;opacity:0;transition:opacity .15s;z-index:1000;top:0;left:0}
 .universe-tooltip.show{opacity:1}
 .universe-tooltip .tt-year{font-weight:700;color:#6a5cf0;font-size:11px}
 .universe-tooltip .tt-title{font-weight:600;margin-top:2px;line-height:1.4}
@@ -120,6 +129,8 @@ h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background
 <p class="subtitle">1943 ~ 2025 | 방법론적 돌파구를 이룬 핵심 논문들의 흐름</p>
 
 <div class="stats" id="stats"></div>
+
+<div class="legend-bar" id="legendBar"></div>
 
 <div class="universe">
   <div class="universe-header">
@@ -136,15 +147,13 @@ h1{font-size:28px;font-weight:700;text-align:center;margin:30px 0 8px;background
         </radialGradient>
       </defs>
     </svg>
-    <div class="universe-tooltip" id="universeTooltip"></div>
   </div>
 </div>
+<div class="universe-tooltip" id="universeTooltip"></div>
 
 <div class="controls">
 <input type="text" class="search-box" id="search" placeholder="논문 제목, 저자, 키워드 검색...">
 </div>
-<div class="filter-pills" id="filters"></div>
-<div class="legend" id="legend"></div>
 <div class="lineage-banner" id="lineageBanner">
   <button class="lineage-close" id="lineageClose">&times;</button>
   <div class="lineage-banner-title" id="lineageTitle">연구 계보</div>
@@ -481,6 +490,10 @@ link:"https://arxiv.org/abs/2101.03961"},
 problem:"수십억 파라미터 모델의 full fine-tuning이 메모리/계산적으로 비현실적이었음",contribution:"LoRA: 가중치 변화를 저랭크 행렬 분해로 근사. 학습 파라미터를 0.1% 수준으로 줄임",impact:"LLM fine-tuning의 사실상 표준. QLoRA 등 후속 연구로 확장",
 link:"https://arxiv.org/abs/2106.09685"},
 
+{id:"alphafold21",y:2021,t:"Highly Accurate Protein Structure Prediction with AlphaFold",a:"John Jumper, Richard Evans, Alexander Pritzel, et al.",af:"DeepMind",cat:"transformer",refs:["transformer17"],
+problem:"단백질 구조 예측은 50년간 미해결의 과학 난제였음",contribution:"AlphaFold 2: Evoformer 트랜스포머 + MSA(진화 정보) + IPA로 원자 수준의 정확도를 experimental 수준에 근접시켜 달성",impact:"단백질 구조 예측 문제의 사실상 해결. AI for Science의 결정적 사례. 2024 노벨 화학상 수상",
+link:"https://doi.org/10.1038/s41586-021-03819-2"},
+
 {id:"efficientnetv221",y:2021,t:"EfficientNetV2: Smaller Models and Faster Training",a:"Mingxing Tan, Quoc V. Le",af:"Google Brain",cat:"cnn",refs:["nas17","resnet15"],
 problem:"NAS로 찾은 EfficientNet의 학습 속도가 느리고, 이미지 크기 증가 시 메모리 문제",contribution:"EfficientNetV2: Progressive learning + Fused-MBConv로 학습 속도 5-11배 향상",impact:"효율적 CNN 설계의 정점. 이후 ConvNeXt가 Transformer 시대에 CNN을 재평가하는 계기",
 link:"https://arxiv.org/abs/2104.00298"},
@@ -509,6 +522,14 @@ link:"https://arxiv.org/abs/2201.03545"},
 {id:"ldm22",y:2022,t:"High-Resolution Image Synthesis with Latent Diffusion Models",a:"Robin Rombach et al.",af:"LMU Munich, Runway",cat:"generative",refs:["ddpm20","vae13","cfg21"],
 problem:"Diffusion 모델이 픽셀 공간에서 직접 작동하여 고해상도 생성이 계산적으로 비실용적",contribution:"Latent Diffusion Model (LDM): VAE의 잠재 공간에서 diffusion 수행. 계산 효율 대폭 향상 → Stable Diffusion",impact:"Stable Diffusion의 핵심 논문. 오픈소스 이미지 생성 AI 혁명을 촉발",
 link:"https://arxiv.org/abs/2112.10752"},
+
+{id:"flowmatch22",y:2022,t:"Flow Matching for Generative Modeling",a:"Yaron Lipman, Ricky T. Q. Chen, Heli Ben-Hamu, et al.",af:"Meta AI (FAIR), Weizmann Institute",cat:"generative",refs:["ddpm20","scoresde20"],
+problem:"Diffusion 모델은 SDE 기반으로 학습/추론 절차가 복잡하고 step 수가 많았음",contribution:"Flow Matching: ODE 기반의 단순하고 일반적인 generative modeling 학습 프레임워크. Conditional vector field를 직접 회귀",impact:"Stable Diffusion 3, π0 등 최신 생성/로봇 모델의 핵심 학습 패러다임. Diffusion → Flow의 전환을 촉발",
+link:"https://arxiv.org/abs/2210.02747"},
+
+{id:"dit22",y:2022,t:"Scalable Diffusion Models with Transformers (DiT)",a:"William Peebles, Saining Xie",af:"UC Berkeley, NYU",cat:"generative",refs:["vit20","ldm22"],
+problem:"Diffusion 모델이 U-Net 백본에 종속되어 명확한 scaling 경로가 부재했음",contribution:"DiT: U-Net을 Vision Transformer 기반으로 교체. 모델 크기↑ → 품질↑ 의 명확한 scaling law 입증",impact:"Stable Diffusion 3, Sora, PixArt 등 최신 이미지/비디오 생성 모델의 표준 백본",
+link:"https://arxiv.org/abs/2212.09748"},
 
 {id:"palm22",y:2022,t:"PaLM: Scaling Language Modeling with Pathways",a:"Aakanksha Chowdhery et al.",af:"Google Research",cat:"transformer",refs:["gpt320","transformer17"],
 problem:"540B 규모의 dense 모델 학습과 emergent abilities의 체계적 분석 필요",contribution:"PaLM (540B): Pathways 시스템으로 6144 TPU에서 훈련. Emergent abilities (BIG-Bench) 대규모 분석",impact:"Emergent abilities 개념의 실증적 근거. PaLM-E, Gemini로 이어지는 Google LLM 계보",
@@ -551,6 +572,10 @@ link:"https://arxiv.org/abs/2305.18290"},
 problem:"로봇 모델이 인터넷 스케일의 시각-언어 지식을 활용하지 못했음",contribution:"RT-2: VLM(PaLI-X, PaLM-E)을 로봇 행동 토큰으로 fine-tuning. 웹 지식이 로봇 제어로 전이됨을 실증",impact:"VLA(Vision-Language-Action) 패러다임의 정식 출발",
 link:"https://arxiv.org/abs/2307.15818"},
 
+{id:"diffpolicy23",y:2023,t:"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",a:"Cheng Chi, Siyuan Feng, Yilun Du, et al.",af:"Columbia, MIT, Toyota Research Institute",cat:"vla",refs:["ddpm20","rt122"],
+problem:"로봇 행동 분포는 다중모드(multimodal)인데 기존 회귀/분류 정책은 이를 표현하기에 부족했음",contribution:"Diffusion Policy: visuomotor 정책을 conditional diffusion으로 학습. 다중모드 행동 분포를 자연스럽게 표현",impact:"로봇 조작 학습의 새로운 표준. π0, OpenVLA의 행동 헤드 설계에 직접 영향",
+link:"https://arxiv.org/abs/2303.04137"},
+
 {id:"palme23",y:2023,t:"PaLM-E: An Embodied Multimodal Language Model",a:"Danny Driess et al.",af:"Google Research, TU Berlin",cat:"vla",refs:["palm22","vit20"],
 problem:"LLM을 실세계 센서 데이터와 직접 연결하는 범용적 방법이 없었음",contribution:"PaLM-E (562B): 다중 센서 입력(이미지, 3D 포인트 클라우드, 상태)을 PaLM에 통합. 세계 최대 VLM",impact:"Embodied AI와 LLM의 통합. 로봇 계획, 시각 QA, 탐색을 단일 모델로",
 link:"https://arxiv.org/abs/2303.03378"},
@@ -568,6 +593,22 @@ link:"https://arxiv.org/abs/2303.12077"},
 problem:"Transformer의 O(n²) self-attention이 긴 시퀀스에서 계산적 병목",contribution:"Mamba: Selective State Space Model (S6). 입력 의존적 게이팅으로 선형 시간 시퀀스 모델링",impact:"Transformer의 대안으로 주목. 비전, 의료, 시계열 등에서 빠르게 적용",
 link:"https://arxiv.org/abs/2312.00752"},
 
+{id:"mixtral24",y:2024,t:"Mixtral of Experts",a:"Albert Q. Jiang, Alexandre Sablayrolles, Antoine Roux, et al.",af:"Mistral AI",cat:"llm",refs:["switch21","llama23"],
+problem:"Dense LLM은 추론 비용이 모델 크기에 비례해 증가하여 효율적 확장이 어려웠음",contribution:"Mixtral 8x7B: 8개 expert 중 2개만 활성화하는 sparse MoE 오픈 LLM. GPT-3.5급 성능을 적은 활성 파라미터로 달성",impact:"오픈소스 MoE LLM의 표준. 이후 DeepSeek-V3, Qwen-MoE 등 모든 대형 오픈 LLM의 기본 설계로 확산",
+link:"https://arxiv.org/abs/2401.04088"},
+
+{id:"llama324",y:2024,t:"The Llama 3 Herd of Models",a:"Llama Team (Aaron Grattafiori, Abhimanyu Dubey, et al.)",af:"Meta AI",cat:"llm",refs:["llama23","chinchilla22"],
+problem:"오픈 가중치 LLM이 GPT-4급 폐쇄 모델과의 격차를 좁히지 못하고 있었음",contribution:"Llama 3 (8B/70B/405B): 15T 토큰으로 학습한 오픈 가중치 LLM 패밀리. 405B가 GPT-4급 성능에 도달",impact:"오픈 LLM의 새 기준선. 학계/산업계 LLM 연구의 사실상 표준 베이스 모델",
+link:"https://arxiv.org/abs/2407.21783"},
+
+{id:"deepseekv324",y:2024,t:"DeepSeek-V3 Technical Report",a:"DeepSeek-AI (Aixin Liu, Bei Feng, Bing Xue, et al.)",af:"DeepSeek-AI",cat:"llm",refs:["mixtral24","chinchilla22"],
+problem:"프론티어 LLM 학습 비용이 수억 달러 규모로 폭증하여 효율적 학습 방법이 절실했음",contribution:"DeepSeek-V3: 671B 파라미터 (활성 37B) MoE를 약 $5.6M에 학습. MLA + DeepSeekMoE + FP8 학습으로 효율 극대화",impact:"효율적 대규모 학습의 새로운 기준. R1의 베이스 모델. 오픈 프론티어 LLM의 가능성을 입증",
+link:"https://arxiv.org/abs/2412.19437"},
+
+{id:"sora24",y:2024,t:"Video Generation Models as World Simulators (Sora)",a:"Tim Brooks, Bill Peebles, Connor Holmes, et al.",af:"OpenAI",cat:"multimodal",refs:["dit22","ldm22"],
+problem:"기존 비디오 생성은 짧고 일관성이 부족했으며, 물리/세계 모델링 능력이 부재했음",contribution:"Sora: DiT 기반 대규모 비디오 생성 모델. Spacetime patch + flow-style 학습으로 분 단위의 일관된 고해상도 비디오 생성",impact:"비디오 생성의 watershed moment. 'Video as World Model' 방향성 제시. 이후 Veo, Movie Gen 등을 촉발",
+link:"https://openai.com/index/video-generation-models-as-world-simulators/"},
+
 {id:"octo24",y:2024,t:"Octo: An Open-Source Generalist Robot Policy",a:"Octo Model Team",af:"UC Berkeley, Stanford, CMU, Google DeepMind",cat:"vla",refs:["rt122"],
 problem:"로봇 학습용 오픈소스 범용 정책 모델이 부재했음",contribution:"Octo: Open X-Embodiment 데이터로 사전학습한 오픈소스 로봇 기초 모델",impact:"오픈소스 로봇 foundation model의 첫 실용적 사례",
 link:"https://arxiv.org/abs/2405.12213"},
@@ -584,12 +625,12 @@ link:"https://arxiv.org/abs/2403.09630"},
 problem:"자율주행 계획에서 다중 모드(multi-modal) 미래 궤적 생성이 어려웠음",contribution:"Diffusion Planner: DDPM 기반 궤적 생성 + Classifier Guidance로 조건부 계획. Ego + surrounding agents 동시 생성",impact:"Diffusion 모델의 자율주행 적용 최전선. CarMaker 시뮬레이션 폐루프 검증 연구의 기반",
 link:"https://arxiv.org/abs/2406.09246"},
 
-{id:"pi024",y:2024,t:"π0: A Vision-Language-Action Flow Model for General Robot Control",a:"Kevin Black et al.",af:"Physical Intelligence (π)",cat:"vla",refs:["openvla24","rt223"],
+{id:"pi024",y:2024,t:"π0: A Vision-Language-Action Flow Model for General Robot Control",a:"Kevin Black et al.",af:"Physical Intelligence (π)",cat:"vla",refs:["openvla24","rt223","flowmatch22","diffpolicy23"],
 problem:"하나의 로봇 모델로 매우 다양한 태스크와 환경에 일반화하기 어려웠음",contribution:"π0: Flow matching 기반 VLA 모델. 사전학습된 VLM + continuous action output",impact:"VLA의 최신 최전선. Flow matching + VLA의 결합으로 로봇 범용 정책의 새 방향",
 link:"https://arxiv.org/abs/2410.24164"},
 
 // ===== 2025 =====
-{id:"deepseekr125",y:2025,t:"DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",a:"DeepSeek-AI",af:"DeepSeek",cat:"llm",refs:["ppo17","cot22"],
+{id:"deepseekr125",y:2025,t:"DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",a:"DeepSeek-AI",af:"DeepSeek",cat:"llm",refs:["ppo17","cot22","deepseekv324"],
 problem:"LLM의 추론 능력을 RL로 체계적으로 향상시키는 방법의 확장성 검증 필요",contribution:"DeepSeek-R1: 대규모 RL(GRPO)로 추론 특화 LLM 학습. 오픈소스로 공개. 수학/코딩에서 GPT-4급 성능",impact:"RL 기반 reasoning 향상의 실용적 대규모 검증. 오픈소스 추론 모델의 새 기준",
 link:"https://arxiv.org/abs/2501.12948"},
 ];
@@ -615,11 +656,10 @@ function getLineage(paperId) {
 }
 
 // Render
-const filtersEl = document.getElementById('filters');
 const timelineEl = document.getElementById('timeline');
 const searchEl = document.getElementById('search');
 const statsEl = document.getElementById('stats');
-const legendEl = document.getElementById('legend');
+const legendBar = document.getElementById('legendBar');
 const lineageBanner = document.getElementById('lineageBanner');
 const lineageTitle = document.getElementById('lineageTitle');
 const lineageDesc = document.getElementById('lineageDesc');
@@ -629,29 +669,44 @@ const lineageClose = document.getElementById('lineageClose');
 let activeFilters = new Set();
 let activeLineage = null; // {paperId, ids: Set}
 
-// Legend
-legendEl.innerHTML = Object.entries(categories).map(([k,v])=>`<div class="legend-item"><div class="legend-dot" style="background:${v.color}"></div>${v.name}</div>`).join('');
+// Combined legend + filter bar
+const lbLabel = document.createElement('span');
+lbLabel.className = 'lb-label';
+lbLabel.textContent = '분야';
+legendBar.appendChild(lbLabel);
 
-// Filter pills
-const allPill = document.createElement('div');
-allPill.className = 'pill active';
-allPill.textContent = '전체';
-allPill.onclick = ()=>{activeFilters.clear();document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));allPill.classList.add('active');render()};
-filtersEl.appendChild(allPill);
+const allPill = document.createElement('button');
+allPill.className = 'legend-pill all active';
+allPill.innerHTML = '<span class="legend-swatch"></span>전체';
+allPill.onclick = () => {
+  activeFilters.clear();
+  document.querySelectorAll('.legend-pill').forEach(el => el.classList.remove('active'));
+  allPill.classList.add('active');
+  clearLineage();
+  render();
+};
+legendBar.appendChild(allPill);
 
-Object.entries(categories).forEach(([k,v])=>{
-  const pill = document.createElement('div');
-  pill.className = 'pill';
-  pill.textContent = v.name;
-  pill.dataset.cat = k;
-  pill.onclick = ()=>{
-    if(activeFilters.has(k)){activeFilters.delete(k);pill.classList.remove('active')}
-    else{activeFilters.add(k);pill.classList.add('active');allPill.classList.remove('active')}
-    if(activeFilters.size===0) allPill.classList.add('active');
+Object.entries(categories).forEach(([k,v]) => {
+  const item = document.createElement('button');
+  item.className = 'legend-pill';
+  item.dataset.cat = k;
+  item.style.setProperty('--cat-color', v.color);
+  item.innerHTML = `<span class="legend-swatch" style="background:${v.color}"></span>${v.name}`;
+  item.onclick = () => {
+    if (activeFilters.has(k)) {
+      activeFilters.delete(k);
+      item.classList.remove('active');
+    } else {
+      activeFilters.add(k);
+      item.classList.add('active');
+      allPill.classList.remove('active');
+    }
+    if (activeFilters.size === 0) allPill.classList.add('active');
     clearLineage();
     render();
   };
-  filtersEl.appendChild(pill);
+  legendBar.appendChild(item);
 });
 
 searchEl.addEventListener('input', ()=>{clearLineage();render()});
@@ -668,6 +723,29 @@ const universeSvg = document.getElementById('universeSvg');
 const universeTooltip = document.getElementById('universeTooltip');
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+function positionTooltip(e){
+  // Use viewport-relative coordinates with edge flipping so the tooltip
+  // never gets clipped by the scroll container or pushed off-screen.
+  const tt = universeTooltip;
+  // Force show to measure
+  const wasShown = tt.classList.contains('show');
+  if (!wasShown) tt.style.visibility = 'hidden';
+  tt.style.left = '0px';
+  tt.style.top = '0px';
+  const rect = tt.getBoundingClientRect();
+  if (!wasShown) tt.style.visibility = '';
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const PAD = 12;
+  let x = e.clientX + 16;
+  let y = e.clientY + 16;
+  if (x + rect.width > vw - PAD) x = e.clientX - rect.width - 16;
+  if (y + rect.height > vh - PAD) y = e.clientY - rect.height - 16;
+  if (x < PAD) x = PAD;
+  if (y < PAD) y = PAD;
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
+}
+
 const VB_W = 1600;
 const VB_H = 1100;
 const MARGIN = {l:90, r:80, t:50, b:70};
@@ -679,8 +757,24 @@ const PLOT_H = VB_H - MARGIN.t - MARGIN.b;
 const paperPos = {};
 let primaryParentOf = {};
 let rootIds = [];
+let xForYear = (y) => MARGIN.l + (y - Y_MIN) / (Y_MAX - Y_MIN) * PLOT_W;
 
 function computePositions(){
+  // ----- Non-linear time axis: compress sparse early years -----
+  // Each year gets weight = base + sqrt(papersInYear). Sparse decades shrink,
+  // dense recent years stretch out so the chart no longer wastes half its width on 1950–1980.
+  const countByYear = {};
+  papers.forEach(p => { countByYear[p.y] = (countByYear[p.y] || 0) + 1; });
+  const yearOffset = {};
+  let acc = 0;
+  for (let y = Y_MIN; y <= Y_MAX; y++) {
+    yearOffset[y] = acc;
+    const c = countByYear[y] || 0;
+    acc += 0.22 + Math.sqrt(c) * 1.05;
+  }
+  const TOTAL_W = acc;
+  xForYear = (y) => MARGIN.l + (yearOffset[y] / TOTAL_W) * PLOT_W;
+
   // Build primary-parent tree (first existing ref = primary parent)
   primaryParentOf = {};
   const childrenOf = {};
@@ -723,12 +817,12 @@ function computePositions(){
   }
   rootIds.forEach(assignY);
 
-  // Convert to pixel coordinates: x by year, y by yIndex
+  // Convert to pixel coordinates: x by (non-linear) year, y by yIndex
   const denom = Math.max(1, leafCounter - 1);
   papers.forEach(p => {
     const pos = paperPos[p.id];
     if (!pos) return;
-    pos.x = MARGIN.l + (p.y - Y_MIN) / (Y_MAX - Y_MIN) * PLOT_W;
+    pos.x = xForYear(p.y);
     pos.y = MARGIN.t + (pos.yIndex / denom) * PLOT_H;
   });
 }
@@ -748,12 +842,12 @@ function renderUniverse(){
   while (universeSvg.firstChild) universeSvg.removeChild(universeSvg.firstChild);
   if (defs) universeSvg.appendChild(defs);
 
-  // Decade grid + year labels
+  // Decade grid + year labels (positioned via non-linear xForYear)
   const axisGroup = document.createElementNS(SVG_NS,'g');
-  const decades = [1950,1960,1970,1980,1990,2000,2010,2020,2025];
+  const decades = [1950,1960,1970,1980,1990,2000,2010,2015,2020,2025];
   decades.forEach(year => {
     if (year < Y_MIN || year > Y_MAX) return;
-    const x = MARGIN.l + (year - Y_MIN) / (Y_MAX - Y_MIN) * PLOT_W;
+    const x = xForYear(year);
     const line = document.createElementNS(SVG_NS,'line');
     line.setAttribute('class','year-grid');
     line.setAttribute('x1',x); line.setAttribute('x2',x);
@@ -855,16 +949,12 @@ function renderUniverse(){
       e.stopPropagation();
       scrollToPaper(p.id);
     });
-    g.addEventListener('mouseenter',() => {
-      const rect = universeSvg.getBoundingClientRect();
-      const vb = universeSvg.viewBox.baseVal;
-      const scaleX = rect.width / vb.width;
-      const scaleY = rect.height / vb.height;
+    g.addEventListener('mouseenter',(e) => {
       universeTooltip.innerHTML = `<div class="tt-year">${p.y}</div><div class="tt-title">${p.t}</div><div class="tt-cat">${categories[p.cat].name}</div>`;
-      universeTooltip.style.left = (pos.x * scaleX + 14) + 'px';
-      universeTooltip.style.top = (pos.y * scaleY + 14) + 'px';
       universeTooltip.classList.add('show');
+      positionTooltip(e);
     });
+    g.addEventListener('mousemove',(e) => positionTooltip(e));
     g.addEventListener('mouseleave',() => {
       universeTooltip.classList.remove('show');
     });
